@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1035251943759",
+    "project_id": "cross-rentalestate",
+    "storage_bucket": "cross-rentalestate.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035251943759:android:9c49f7805bbf7a44dbdd3a",
+        "android_client_info": {
+          "package_name": "com.example.rental"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQSgl-e19_Dzi3gCn6QFIVuXpcXx9iaD4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035251943759:android:f18bd85e6d3eebb1dbdd3a",
+        "android_client_info": {
+          "package_name": "com.example.rental_estate_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQSgl-e19_Dzi3gCn6QFIVuXpcXx9iaD4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,42 @@
+{
+  "m_section_new": "Жаңа",
+  "m_section_popular": "Танымал",
+  "m_section_hot": "Ыстық",
+  "m_welcome_back": "Сәлеметсіз бе!",
+  "m_see_all": "Көбірек",
+  "m_categories": "Санаттар",
+
+  "s_settings": "Параметрлер",
+  "s_dark_mode": "Қараңғы режим",
+  "s_notifications": "Хабарламалар",
+  "s_language": "Тіл",
+  "s_account_settings": "Аккаунт баптаулары",
+  "s_privacy": "Құпиялылық саясаты",
+  "s_about": "Қосымша туралы",
+
+  "p_favorites": "Таңдаулылар",
+  "p_chats": "Чаттар",
+  "p_map": "Карта",
+
+  "map_select_city": "Қаланы таңдау",
+
+  "e_views": "қаралымдар",
+  "e_description": "Сипаттама",
+  "e_details": "Мүлік туралы мәлімет",
+  "e_on_map": "Картадағы орны",
+
+  "u_price": "Бағасы",
+  "u_title": "Тақырыбы",
+  "u_date": "Күні",
+  "u_views": "Қаралымдар",
+
+  "a_login": "Кіру",
+  "a_register": "Тіркелу",
+  "a_email": "Пошта",
+  "a_password": "Құпия сөз",
+  "a_enter_correct_email": "Дұрыс email енгізіңіз",
+  "a_password_6_symbols": "Кемінде 6 таңба!",
+  "a_not_registered": "Тіркелмегенсіз бе? Тіркелу",
+  "a_has_account": "Аккаунтыңыз бар ма? Кіру",
+  "a_guest_mode": "Қонақ режимі"
+}

@@ -1,0 +1,42 @@
+{
+  "m_section_new": "Новое",
+  "m_section_popular": "Популярное",
+  "m_section_hot": "Горячее",
+  "m_welcome_back": "Добро пожаловать!",
+  "m_see_all": "Больше",
+  "m_categories": "Категории",
+
+  "s_settings": "Настройки",
+  "s_dark_mode": "Тёмная тема",
+  "s_notifications": "Уведомления",
+  "s_language": "Язык",
+  "s_account_settings": "Настройки аккаунта",
+  "s_privacy": "Политика конфиденциальности",
+  "s_about": "О приложении",
+
+  "p_favorites": "Избранное",
+  "p_chats": "Чаты",
+  "p_map": "Карта",
+
+  "map_select_city": "Выбрать город",
+
+  "e_views": "просмотры",
+  "e_description": "Описание",
+  "e_details": "Детали объекта",
+  "e_on_map": "Местоположение на карте",
+
+  "u_price": "Цена",
+  "u_title": "Заголовок",
+  "u_date": "Дата",
+  "u_views": "Просмотры",
+
+  "a_login": "Войти",
+  "a_register": "Регистрация",
+  "a_email": "Почта",
+  "a_password": "Пароль",
+  "a_enter_correct_email": "Введите корректный email",
+  "a_password_6_symbols": "Минимум 6 символов!",
+  "a_not_registered": "Ещё не зарегистрированы? Зарегистрироваться",
+  "a_has_account": "Уже есть аккаунт? Войти",
+  "a_guest_mode": "Гостевой режим"
+}

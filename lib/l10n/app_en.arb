@@ -1,0 +1,42 @@
+{
+  "m_section_new": "New",
+  "m_section_popular": "Popular",
+  "m_section_hot": "Hot",
+  "m_welcome_back": "Welcome back!",
+  "m_see_all": "See all",
+  "m_categories": "Categories",
+
+  "s_settings": "Settings",
+  "s_dark_mode": "Dark Mode",
+  "s_notifications": "Notifications",
+  "s_language": "Language",
+  "s_account_settings": "Account Settings",
+  "s_privacy": "Privacy Policy",
+  "s_about": "About",
+
+  "p_favorites": "Favorites",
+  "p_chats": "Chats",
+  "p_map": "Map",
+
+  "map_select_city": "Select city",
+
+  "e_views": "views",
+  "e_description": "Description",
+  "e_details": "Property Details",
+  "e_on_map": "Location on Map",
+
+  "u_price": "Price",
+  "u_title": "Title",
+  "u_date": "Date",
+  "u_views": "Views",
+
+  "a_login": "Login",
+  "a_register": "Register",
+  "a_email": "Email",
+  "a_password": "Password",
+  "a_enter_correct_email": "Enter correct email",
+  "a_password_6_symbols": "Minimum 6 symbols!",
+  "a_not_registered": "Not registered yet? Register",
+  "a_has_account": "Already has account? Login",
+  "a_guest_mode": "Guest mode"
+}
