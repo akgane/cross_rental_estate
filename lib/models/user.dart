@@ -13,7 +13,7 @@ class AppUser {
     required this.username,
     this.language = 'en',
     this.theme = 'ThemeMode.light',
-    this.avatarUrl = 'https://randomuser.me/api/portraits/men/1.jpg',
+    this.avatarUrl = 'https://avatar.iran.liara.run/username?username=?',
     this.favoriteEstates = const [],
   });
 

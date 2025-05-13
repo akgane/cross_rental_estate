@@ -59,7 +59,7 @@ class _EstateCardState extends State<EstateCard>{
 
   void _toggleFavorite(){
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    
+
     if(authProvider.isGuest) return;
 
     setState(() {
@@ -146,6 +146,8 @@ class _EstateCardState extends State<EstateCard>{
 
   Widget _buildFavoriteButton(BuildContext context){
     final theme = Theme.of(context);
+    final authProvider = Provider.of<AuthProvider>(context);
+
     return IconButton(
       icon: Icon(
           widget.isFavorite ? Icons.favorite : Icons.favorite_border,
@@ -153,7 +155,7 @@ class _EstateCardState extends State<EstateCard>{
               ? theme.colorScheme.error
               : theme.iconTheme.color
       ),
-      onPressed: _toggleFavorite,
+      onPressed: authProvider.isGuest ? null : _toggleFavorite,
     );
   }
 }

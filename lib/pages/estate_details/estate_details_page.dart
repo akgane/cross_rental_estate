@@ -68,6 +68,7 @@ class _EstateDetailsState extends State<EstateDetailsPage>{
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context);
+    final authProvider = Provider.of<AP.AuthProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -86,7 +87,7 @@ class _EstateDetailsState extends State<EstateDetailsPage>{
               isFavorite ? Icons.favorite : Icons.favorite_border,
               color: isFavorite ? theme.colorScheme.error : theme.iconTheme.color,
             ),
-            onPressed: _toggleFavorite,
+            onPressed: authProvider.isGuest ? null : _toggleFavorite,
           )
         ],
       ),
