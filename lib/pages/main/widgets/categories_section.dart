@@ -27,7 +27,7 @@ class CategoriesSection extends StatelessWidget {
           ),
         ),
 
-        CategoriesGridView(categories: categories)
+        CategoriesGridView(categories: categories, estates: estates)
       ],
     );
   }
