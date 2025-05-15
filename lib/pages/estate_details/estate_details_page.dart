@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rental_estate_app/models/estate.dart';
+import 'package:rental_estate_app/widgets/estate_image.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:rental_estate_app/providers/auth_provider.dart' as AP;
@@ -98,11 +99,10 @@ class _EstateDetailsState extends State<EstateDetailsPage>{
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                widget.estate.imageUrls[0],
+              child: EstateImage(
+                imageUrl: widget.estate.imageUrls[0],
                 height: 250,
                 width: double.infinity,
-                fit: BoxFit.cover,
               ),
             ),
             SizedBox(height: 16),

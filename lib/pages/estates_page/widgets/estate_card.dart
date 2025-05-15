@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rental_estate_app/models/estate.dart';
 import 'package:rental_estate_app/providers/auth_provider.dart';
 import 'package:rental_estate_app/routes/app_routes.dart';
+import 'package:rental_estate_app/widgets/estate_image.dart';
 
 class EstateCard extends StatefulWidget{
   Estate estate;
@@ -86,14 +87,11 @@ class _EstateCardState extends State<EstateCard>{
   }
 
   Widget _buildImage(BuildContext context){
-    return ClipRRect(
-        borderRadius: BorderRadius.circular(EstateCardStyles.borderRadius),
-        child: Image.network(
-            widget.estate.imageUrls[0],
-            width: EstateCardStyles.imageWidth,
-            height: EstateCardStyles.imageHeight,
-            fit: BoxFit.cover
-        )
+    return EstateImage(
+      imageUrl: widget.estate.imageUrls[0],
+      width: EstateCardStyles.imageWidth,
+      height: EstateCardStyles.imageHeight,
+      borderRadius: BorderRadius.circular(EstateCardStyles.borderRadius),
     );
   }
 

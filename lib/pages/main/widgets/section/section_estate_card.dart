@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rental_estate_app/models/estate.dart';
+import 'package:rental_estate_app/widgets/estate_image.dart';
 
 class SectionEstateCard extends StatelessWidget {
   Estate estate;
@@ -26,11 +27,10 @@ class SectionEstateCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-              child: Image.network(
-                estate.imageUrls[0],
+              child: EstateImage(
+                imageUrl: estate.imageUrls[0],
                 height: 100,
                 width: double.infinity,
-                fit: BoxFit.cover,
               ),
             ),
             Expanded(

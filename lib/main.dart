@@ -15,11 +15,14 @@ import 'package:rental_estate_app/providers/theme_provider.dart';
 import 'package:rental_estate_app/providers/session_provider.dart';
 import 'package:rental_estate_app/routes/app_routes.dart';
 import 'package:rental_estate_app/routes/route_generator.dart';
+import 'package:rental_estate_app/services/connectivity_service.dart';
+import 'package:rental_estate_app/services/offline_storage_service.dart';
 import 'package:rental_estate_app/utils/estate_utils.dart';
 import 'package:rental_estate_app/utils/theme_data.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:rental_estate_app/widgets/splash_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -30,12 +33,16 @@ Future<void> main() async{
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  final sharedPreferences = await SharedPreferences.getInstance();
+  final connectivityService = ConnectivityService();
+  final offlineStorage = OfflineStorageService(sharedPreferences);
+
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => SessionProvider()),
     ChangeNotifierProvider(create: (_) => AuthProvider()),
     ChangeNotifierProvider(create: (_) => ThemeProvider()),
     ChangeNotifierProvider(create: (_) => LocaleProvider()),
-    ChangeNotifierProvider(create: (_) => EstateProvider()),
+    ChangeNotifierProvider(create: (_) => EstateProvider(connectivityService, offlineStorage)),
     ChangeNotifierProvider(create: (_) => CategoryProvider())
   ],
   child: MyApp()
@@ -73,9 +80,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class AuthWrapper extends StatelessWidget {
+class AuthWrapper extends StatefulWidget {
   const AuthWrapper({Key? key}) : super(key: key);
 
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
@@ -91,7 +103,12 @@ class AuthWrapper extends StatelessWidget {
     }
 
     if (session.isLoggedIn && auth.user == null) {
-      auth.reloadUser(session.userId!);
+      // Schedule the reload for after this frame is complete
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          auth.reloadUser(session.userId!);
+        }
+      });
       return Scaffold(
         body: SplashScreen()
       );
