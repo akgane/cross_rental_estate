@@ -3,65 +3,93 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Estate {
   final String uid;
   final String title;
-  final String category;
-  final String address;
-  final List<String> imageUrls;
-  final int views;
+  final String description;
   final double price;
-  final Map<String, dynamic> features;
-  final DateTime postedDate;
+  final String location;
+  final List<String> imageUrls;
+  final String category;
+  final String ownerId;
+  final DateTime createdAt;
 
   Estate({
     required this.uid,
     required this.title,
-    required this.category,
-    required this.address,
-    required this.imageUrls,
-    this.views = 0,
+    required this.description,
     required this.price,
-    required this.features,
-    required this.postedDate,
+    required this.location,
+    required this.imageUrls,
+    required this.category,
+    required this.ownerId,
+    required this.createdAt,
   });
 
   Estate copyWith() {
     return Estate(
       uid: uid,
       title: title,
-      category: category,
-      address: address,
-      imageUrls: imageUrls,
-      views: views,
+      description: description,
       price: price,
-      features: features,
-      postedDate: postedDate,
+      location: location,
+      imageUrls: imageUrls,
+      category: category,
+      ownerId: ownerId,
+      createdAt: createdAt,
     );
   }
 
-  factory Estate.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-
-    DateTime parsePostedDate(dynamic dateData) {
-      if (dateData is String) {
-        return DateTime.parse(dateData);
-      } else if (dateData is Timestamp) {
-        return dateData.toDate();
-      } else {
-        return DateTime.now();
-      }
-    }
-
+  factory Estate.fromFirestore(Map<String, dynamic> data, String uid) {
     return Estate(
-      uid: doc.id,
-      title: data['title'] ?? 'No title',
-      category: data['category'] ?? 'Unknown',
-      address: data['address'] ?? 'No Address',
-      imageUrls:
-          data['image-urls'] ??
-          (data['imageUrl'] != null ? [data['imageUrl']] : []),
-      price: (data['price'] as num?)?.toDouble() ?? 0.0,
-      postedDate: parsePostedDate(data['postedDate']),
-      features: Map<String, dynamic>.from(data['features'] ?? {}),
-      views: (data['views'] as num?)?.toInt() ?? 0,
+      uid: uid,
+      title: data['title'] ?? '',
+      description: data['description'] ?? '',
+      price: (data['price'] ?? 0).toDouble(),
+      location: data['location'] ?? '',
+      imageUrls: List<String>.from(data['image-urls'] ?? []),
+      category: data['category'] ?? '',
+      ownerId: data['owner-id'] ?? '',
+      createdAt: (data['created-at'] as Timestamp).toDate(),
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'title': title,
+      'description': description,
+      'price': price,
+      'location': location,
+      'image-urls': imageUrls,
+      'category': category,
+      'owner-id': ownerId,
+      'created-at': Timestamp.fromDate(createdAt),
+    };
+  }
+
+  // Методы для сериализации в JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'title': title,
+      'description': description,
+      'price': price,
+      'location': location,
+      'image-urls': imageUrls,
+      'category': category,
+      'owner-id': ownerId,
+      'created-at': createdAt.toIso8601String(),
+    };
+  }
+
+  factory Estate.fromJson(Map<String, dynamic> json) {
+    return Estate(
+      uid: json['uid'],
+      title: json['title'],
+      description: json['description'],
+      price: json['price'].toDouble(),
+      location: json['location'],
+      imageUrls: List<String>.from(json['image-urls']),
+      category: json['category'],
+      ownerId: json['owner-id'],
+      createdAt: DateTime.parse(json['created-at']),
     );
   }
 }

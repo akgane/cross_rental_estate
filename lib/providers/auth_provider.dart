@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:rental_estate_app/services/auth_service.dart';
+import 'package:rental_estate_app/services/session_service.dart';
 
 import '../models/user.dart';
 
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
-
+  SessionService? _sessionService;
+  
   AppUser? _user;
-  bool _isLoading = false;
+  bool _isLoading = true; // Changed to true by default
   bool _isGuest = false;
   String? _error;
 
@@ -15,6 +17,28 @@ class AuthProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isGuest => _isGuest;
   String? get error => _error;
+
+  // Инициализация провайдера и проверка сохраненной сессии
+  Future<void> initializeSession() async {
+    if (_sessionService != null) return; // Prevent multiple initializations
+    
+    try {
+      _sessionService = await SessionService.getInstance();
+      
+      if (_sessionService!.isLoggedIn) {
+        final userId = _sessionService!.userId;
+        if (userId != null) {
+          _user = await _authService.getUserData(userId);
+          _isGuest = false;
+        }
+      }
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 
   Future<void> login(String email, String password) async {
     debugPrint("login as user");
@@ -25,6 +49,8 @@ class AuthProvider with ChangeNotifier {
     try {
       _user = await _authService.loginWithEmail(email, password);
       _isGuest = false;
+      // Сохраняем сессию после успешного входа
+      await _sessionService?.saveSession(userId: _user!.uid);
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -42,6 +68,8 @@ class AuthProvider with ChangeNotifier {
     try {
       _user = await _authService.registerWithEmail(email, password, username);
       _isGuest = false;
+      // Сохраняем сессию после успешной регистрации
+      await _sessionService?.saveSession(userId: _user!.uid);
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -54,10 +82,13 @@ class AuthProvider with ChangeNotifier {
     debugPrint("loging as guest");
     _isLoading = true;
     _error = null;
+    notifyListeners();
 
     try {
       _user = await _authService.loginAsGuest();
       _isGuest = true;
+      // Очищаем сессию при входе как гость
+      await _sessionService?.clearSession();
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -68,6 +99,8 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> signOut() async {
     await _authService.signOut();
+    // Очищаем сессию при выходе
+    await _sessionService?.clearSession();
     _user = null;
     notifyListeners();
   }

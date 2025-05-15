@@ -26,6 +26,8 @@ class AuthService {
     );
   }
 
+  Future<AppUser?> getUserData(String uid) => _getUserData(uid);
+
   Future<AppUser?> registerWithEmail(String email,
       String password,
       String username) async {

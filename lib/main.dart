@@ -19,6 +19,7 @@ import 'package:rental_estate_app/utils/theme_data.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:rental_estate_app/widgets/splash_screen.dart';
+import 'package:rental_estate_app/widgets/offline_banner.dart';
 
 
 
@@ -71,8 +72,22 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class AuthWrapper extends StatelessWidget{
+class AuthWrapper extends StatefulWidget {
   const AuthWrapper({Key? key}) : super(key: key);
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  late Future<void> _initializationFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    _initializationFuture = auth.initializeSession();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,22 +95,27 @@ class AuthWrapper extends StatelessWidget{
 
     debugPrint("AuthWrapper building");
 
-    if(auth.isLoading){
-      debugPrint("AuthWrapper: auth.isLoading");
-      return Scaffold(
-        body: SplashScreen()
-      );
-    }
+    return FutureBuilder(
+      future: _initializationFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting || auth.isLoading) {
+          debugPrint("AuthWrapper: Loading");
+          return Scaffold(
+            body: SplashScreen()
+          );
+        }
 
-    debugPrint("AuthWrapper: !auth.isLoading");
+        debugPrint("AuthWrapper: !auth.isLoading");
 
-    if(auth.user != null){
-      debugPrint("AuthWrapper: auth.user != null");
-      return const MainPage();
-    }else {
-      debugPrint("AuthWrapper: auth.user == null");
-      return const MainPage(guestMode: true,);
-    }
+        if(auth.user != null){
+          debugPrint("AuthWrapper: auth.user != null");
+          return const MainPage();
+        } else {
+          debugPrint("AuthWrapper: auth.user == null");
+          return const MainPage(guestMode: true,);
+        }
+      }
+    );
   }
 }
 
@@ -143,23 +163,30 @@ class MainPage extends StatelessWidget{
           return Scaffold(
               backgroundColor: theme.scaffoldBackgroundColor,
               body: SafeArea(
-                  child: ListView(
-                      padding: const EdgeInsets.all(16),
-                      children: [
-                        TopBar(
-                          username: authProvider.user?.username ?? 'Guest',
-                          avatarUrl: authProvider.user?.avatarUrl ?? 'https://randomuser.me/api/portraits/men/1.jpg'
-                        ),
-                        SizedBox(height: 16),
-                        CategoriesSection(estates: estateProvider.estates, categories: categoryProvider.categories,),
-                        SizedBox(height: 24),
+                  child: Column(
+                    children: [
+                      OfflineBanner(),
+                      Expanded(
+                        child: ListView(
+                            padding: const EdgeInsets.all(16),
+                            children: [
+                              TopBar(
+                                username: authProvider.user?.username ?? 'Guest',
+                                avatarUrl: authProvider.user?.avatarUrl ?? 'https://randomuser.me/api/portraits/men/1.jpg'
+                              ),
+                              SizedBox(height: 16),
+                              CategoriesSection(estates: estateProvider.estates, categories: categoryProvider.categories,),
+                              SizedBox(height: 24),
 
-                        Section(title: loc!.m_section_new, estates: EstateUtils.getRandomEstates(estateProvider.estates, 10)),
-                        SizedBox(height: 24,),
-                        Section(title: loc.m_section_hot, estates: EstateUtils.getRandomEstates(estateProvider.estates, 10)),
-                        SizedBox(height: 24,),
-                        Section(title: loc.m_section_popular, estates: EstateUtils.getRandomEstates(estateProvider.estates, 10)),
-                      ]
+                              Section(title: loc!.m_section_new, estates: EstateUtils.getRandomEstates(estateProvider.estates, 10)),
+                              SizedBox(height: 24,),
+                              Section(title: loc.m_section_hot, estates: EstateUtils.getRandomEstates(estateProvider.estates, 10)),
+                              SizedBox(height: 24,),
+                              Section(title: loc.m_section_popular, estates: EstateUtils.getRandomEstates(estateProvider.estates, 10)),
+                            ]
+                        ),
+                      ),
+                    ],
                   )
               ),
             
