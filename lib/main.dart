@@ -12,6 +12,7 @@ import 'package:rental_estate_app/providers/category_provider.dart';
 import 'package:rental_estate_app/providers/estate_provider.dart';
 import 'package:rental_estate_app/providers/locale_provider.dart';
 import 'package:rental_estate_app/providers/theme_provider.dart';
+import 'package:rental_estate_app/providers/session_provider.dart';
 import 'package:rental_estate_app/routes/app_routes.dart';
 import 'package:rental_estate_app/routes/route_generator.dart';
 import 'package:rental_estate_app/utils/estate_utils.dart';
@@ -30,6 +31,7 @@ Future<void> main() async{
   );
 
   runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => SessionProvider()),
     ChangeNotifierProvider(create: (_) => AuthProvider()),
     ChangeNotifierProvider(create: (_) => ThemeProvider()),
     ChangeNotifierProvider(create: (_) => LocaleProvider()),
@@ -71,30 +73,39 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class AuthWrapper extends StatelessWidget{
+class AuthWrapper extends StatelessWidget {
   const AuthWrapper({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
+    final session = Provider.of<SessionProvider>(context);
 
     debugPrint("AuthWrapper building");
 
-    if(auth.isLoading){
-      debugPrint("AuthWrapper: auth.isLoading");
+    if (auth.isLoading || !session.isInitialized) {
+      debugPrint("AuthWrapper: Loading state");
       return Scaffold(
         body: SplashScreen()
       );
     }
 
-    debugPrint("AuthWrapper: !auth.isLoading");
+    if (session.isLoggedIn && auth.user == null) {
+      auth.reloadUser(session.userId!);
+      return Scaffold(
+        body: SplashScreen()
+      );
+    }
 
-    if(auth.user != null){
-      debugPrint("AuthWrapper: auth.user != null");
+    if (auth.user != null) {
+      debugPrint("AuthWrapper: User authenticated");
+      if (!session.isLoggedIn) {
+        session.login(auth.user!.uid);
+      }
       return const MainPage();
-    }else {
-      debugPrint("AuthWrapper: auth.user == null");
-      return const MainPage(guestMode: true,);
+    } else {
+      debugPrint("AuthWrapper: Guest mode");
+      return const MainPage(guestMode: true);
     }
   }
 }

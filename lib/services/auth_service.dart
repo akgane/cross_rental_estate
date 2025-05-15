@@ -120,4 +120,17 @@ class AuthService {
       username: 'Guest', //TODO loc
     );
   }
+
+  Future<AppUser?> getUserById(String userId) async {
+    try {
+      final userData = await _getUserData(userId);
+      if (userData == null) {
+        throw Exception('User not found');
+      }
+      return userData;
+    } catch (e) {
+      debugPrint('Error getting user by ID: $e');
+      throw e;
+    }
+  }
 }

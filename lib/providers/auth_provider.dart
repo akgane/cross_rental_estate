@@ -84,4 +84,21 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> reloadUser(String userId) async {
+    debugPrint("Reloading user with ID: $userId");
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _user = await _authService.getUserById(userId);
+      _isGuest = false;
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }
