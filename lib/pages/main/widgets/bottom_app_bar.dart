@@ -29,7 +29,10 @@ class MyBottomAppBar extends StatelessWidget{
 
           SizedBox(width: 40,),
 
-          IconButton(icon: Icon(Icons.message, color: (isGuest ? theme.disabledColor : theme.iconTheme.color)), onPressed: isGuest ? null : () => debugPrint('opening messages page')),
+          IconButton(
+            icon: Icon(Icons.message, color: (isGuest ? theme.disabledColor : theme.iconTheme.color)), 
+            onPressed: isGuest ? null : () => Navigator.pushNamed(context, AppRoutes.chats)
+          ),
 
           IconButton(icon: Icon(Icons.settings), onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),)
         ]

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rental_estate_app/pages/auth/auth_page.dart';
+import 'package:rental_estate_app/pages/chats/chat_details_page.dart';
+import 'package:rental_estate_app/pages/chats/chats_page.dart';
 import 'package:rental_estate_app/pages/estate_details/estate_details_page.dart';
 import 'package:rental_estate_app/pages/favorites/favorites_page.dart';
 import 'package:rental_estate_app/pages/profile/profile_page.dart';
@@ -41,9 +43,19 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => FavoritesPage()
         );
+      case AppRoutes.chats:
+        return MaterialPageRoute(
+          builder: (_) => ChatsPage()
+        );
+      case AppRoutes.chatDetails:
+        return MaterialPageRoute(
+          builder: (_) => ChatDetailsPage(chatId: args?['chatId'])
+        );
       case AppRoutes.home:
       default:
-        return MaterialPageRoute(builder: (_) => const MainPage());
+        return MaterialPageRoute(
+          builder: (_) => MainPage(guestMode: args?['guestMode'] ?? false)
+        );
     }
   }
 }

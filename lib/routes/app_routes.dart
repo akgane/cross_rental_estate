@@ -6,7 +6,7 @@ class AppRoutes{
   static const String settings = '/settings';
   static const String favorites = '/favorites';
   static const String chats = '/chats';
-  static const String map = '/map';
   static const String chatDetails = '/chat-details';
+  static const String map = '/map';
   static const String profile = '/profile';
 }

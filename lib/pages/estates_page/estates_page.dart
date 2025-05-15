@@ -5,7 +5,7 @@ import 'package:rental_estate_app/models/estate.dart';
 import 'package:rental_estate_app/pages/estates_page/widgets/estate_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:rental_estate_app/providers/auth_provider.dart' as AP;
-
+import 'package:rental_estate_app/utils/sort_utils.dart';
 
 class EstatesPage extends StatefulWidget{
   String title;
@@ -26,13 +26,18 @@ class _EstatesPageState extends State<EstatesPage>{
   void initState(){
     super.initState();
     _sortedEstates = [...widget.estates];
+    _sortEstates(_currentSort);
   }
 
   void _sortEstates(String sortBy){
     setState(() {
-      _currentSort = sortBy;
-      _isAscending = !_isAscending;
-      // _sortedEstates = SortUtils.sortBy(sortBy, _sortedEstates, _isAscending);
+      if (_currentSort == sortBy) {
+        _isAscending = !_isAscending;
+      } else {
+        _currentSort = sortBy;
+        _isAscending = true;
+      }
+      _sortedEstates = SortUtils.sortBy(sortBy, _sortedEstates, _isAscending);
     });
   }
 
@@ -40,6 +45,7 @@ class _EstatesPageState extends State<EstatesPage>{
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     final authProvider = Provider.of<AP.AuthProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -60,8 +66,7 @@ class _EstatesPageState extends State<EstatesPage>{
                 _buildSortButton(loc.u_views, Icons.visibility, "views"),
               ],
             ),
-          )
-          ,
+          ),
           Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
@@ -76,13 +81,11 @@ class _EstatesPageState extends State<EstatesPage>{
                           Column(
                               children: [
                                 SizedBox(height: 8,),
-
                                 Divider(
                                     height: 1,
                                     thickness: 0.5,
-                                    color: Colors.grey[300]
+                                    color: theme.dividerColor
                                 ),
-
                                 SizedBox(height: 8,)
                               ]
                           )
@@ -97,6 +100,7 @@ class _EstatesPageState extends State<EstatesPage>{
   }
 
   Widget _buildSortButton(String label, IconData icon, String sortBy) {
+    final theme = Theme.of(context);
     return ElevatedButton.icon(
       onPressed: () => _sortEstates(sortBy),
       style: ElevatedButton.styleFrom(

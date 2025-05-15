@@ -168,7 +168,7 @@ class MainPage extends StatelessWidget{
                 onPressed: () => debugPrint('opening map page'),
                 backgroundColor: theme.primaryColor,
                 shape: CircleBorder(),
-                child: Icon(Icons.map)
+                child: Icon(Icons.create_outlined)
             ),
             floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           );

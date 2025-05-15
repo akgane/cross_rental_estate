@@ -93,125 +93,140 @@ class _AuthPageState extends State<AuthPage> {
     final loc = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
-
     return Scaffold(
-        body: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Center(
-                child: SingleChildScrollView(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Card(
-                              color: theme.scaffoldBackgroundColor,
-                              elevation: 4,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)
-                              ),
-                              child: Padding(
-                                  padding: const EdgeInsets.all(12),
-                                  child: Form(
-                                      key: _formKey,
-                                      child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Row(
-                                                mainAxisAlignment: MainAxisAlignment
-                                                    .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                      widget.isRegistering
-                                                          ? loc!.a_register
-                                                          : loc!.a_login,
-                                                      style: theme.textTheme
-                                                          .titleLarge
-                                                  ),
-                                                ]
-                                            ),
+      appBar: AppBar(
+        actions: [
+          TextButton.icon(
+            icon: Icon(Icons.person_outline),
+            label: Text(loc!.a_guest_mode),
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AppRoutes.home,
+                (route) => false,
+                arguments: {'guestMode': true}
+              );
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Center(
+              child: SingleChildScrollView(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Card(
+                            color: theme.scaffoldBackgroundColor,
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)
+                            ),
+                            child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Form(
+                                    key: _formKey,
+                                    child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                              mainAxisAlignment: MainAxisAlignment
+                                                  .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    widget.isRegistering
+                                                        ? loc!.a_register
+                                                        : loc!.a_login,
+                                                    style: theme.textTheme
+                                                        .titleLarge
+                                                ),
+                                              ]
+                                          ),
+                                          AuthTextFormField(
+                                              formKey: ValueKey('email'),
+                                              decorationLabel: loc.a_email,
+                                              controller: _emailController,
+                                              keyboardType: TextInputType
+                                                  .emailAddress,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    !value.contains('@'))
+                                                  return loc
+                                                      .a_enter_correct_email;
+                                                return null;
+                                              }),
+                                          AuthTextFormField(
+                                              formKey: ValueKey('password'),
+                                              decorationLabel: loc.a_password,
+                                              controller: _passwordController,
+                                              obsecure: true,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.length < 6)
+                                                  return loc
+                                                      .a_password_6_symbols;
+                                                return null;
+                                              }
+                                          ),
+                                          if(widget.isRegistering)...[
                                             AuthTextFormField(
-                                                formKey: ValueKey('email'),
-                                                decorationLabel: loc.a_email,
-                                                controller: _emailController,
-                                                keyboardType: TextInputType
-                                                    .emailAddress,
+                                                formKey: ValueKey('username'),
+                                                decorationLabel: 'Username',
+                                                controller: _usernameController,
+                                                //TODO loc
                                                 validator: (value) {
                                                   if (value == null ||
-                                                      !value.contains('@'))
-                                                    return loc
-                                                        .a_enter_correct_email;
-                                                  return null;
-                                                }),
-                                            AuthTextFormField(
-                                                formKey: ValueKey('password'),
-                                                decorationLabel: loc.a_password,
-                                                controller: _passwordController,
-                                                obsecure: true,
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.length < 6)
-                                                    return loc
-                                                        .a_password_6_symbols;
+                                                      value.length < 4)
+                                                    return "Short username"; //TODO loc
                                                   return null;
                                                 }
-                                            ),
-                                            if(widget.isRegistering)...[
-                                              AuthTextFormField(
-                                                  formKey: ValueKey('username'),
-                                                  decorationLabel: 'Username',
-                                                  controller: _usernameController,
-                                                  //TODO loc
-                                                  validator: (value) {
-                                                    if (value == null ||
-                                                        value.length < 4)
-                                                      return "Short username"; //TODO loc
-                                                    return null;
-                                                  }
-                                              )
-                                            ],
+                                            )
+                                          ],
 
-                                            SizedBox(height: 16,),
+                                          SizedBox(height: 16,),
 
-                                            _isLoading
-                                                ? SplashScreen()
-                                                : AuthElevatedButton(
-                                                text: widget.isRegistering
-                                                    ? loc.a_register
-                                                    : loc.a_login,
-                                                theme: theme,
-                                                onPressed: _submit),
-                                            TextButton(
-                                              style: TextButton.styleFrom(
-                                                textStyle: theme.textTheme
-                                                    .bodyLarge,
-                                              ),
-                                              onPressed: () {
-                                                Navigator
-                                                    .of(context)
-                                                    .pushReplacement(
-                                                    MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            AuthPage(
-                                                              isRegistering: !widget
-                                                                  .isRegistering,)
-                                                    )
-                                                );
-                                              },
-                                              child: Text(
-                                                widget.isRegistering
-                                                    ? loc.a_has_account
-                                                    : loc.a_not_registered,
-                                              ),
+                                          _isLoading
+                                              ? SplashScreen()
+                                              : AuthElevatedButton(
+                                              text: widget.isRegistering
+                                                  ? loc.a_register
+                                                  : loc.a_login,
+                                              theme: theme,
+                                              onPressed: _submit),
+                                          TextButton(
+                                            style: TextButton.styleFrom(
+                                              textStyle: theme.textTheme
+                                                  .bodyLarge,
                                             ),
-                                          ]
-                                      )
-                                  )
-                              )
-                          ),
-                        ]
-                    )
-                )
-            )
-        )
+                                            onPressed: () {
+                                              Navigator
+                                                  .of(context)
+                                                  .pushReplacement(
+                                                  MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          AuthPage(
+                                                            isRegistering: !widget
+                                                                .isRegistering,)
+                                                  )
+                                              );
+                                            },
+                                            child: Text(
+                                              widget.isRegistering
+                                                  ? loc.a_has_account
+                                                  : loc.a_not_registered,
+                                            ),
+                                          ),
+                                        ]
+                                    )
+                                )
+                            )
+                        ),
+                      ]
+                  )
+              )
+          )
+      )
     );
   }
 }
