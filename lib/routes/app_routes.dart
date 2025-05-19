@@ -9,4 +9,5 @@ class AppRoutes{
   static const String chatDetails = '/chat-details';
   static const String map = '/map';
   static const String profile = '/profile';
+  static const String addEstate = '/add-estate';
 }

@@ -6,6 +6,7 @@ import 'package:rental_estate_app/pages/estate_details/estate_details_page.dart'
 import 'package:rental_estate_app/pages/favorites/favorites_page.dart';
 import 'package:rental_estate_app/pages/profile/profile_page.dart';
 import 'package:rental_estate_app/pages/settings/settings_page.dart';
+import 'package:rental_estate_app/pages/add_estate/add_estate_page.dart';
 
 import '../main.dart';
 import '../pages/estates_page/estates_page.dart';
@@ -50,6 +51,10 @@ class RouteGenerator {
       case AppRoutes.chatDetails:
         return MaterialPageRoute(
           builder: (_) => ChatDetailsPage(chatId: args?['chatId'])
+        );
+      case AppRoutes.addEstate:
+        return MaterialPageRoute(
+          builder: (_) => AddEstatePage()
         );
       case AppRoutes.home:
       default:

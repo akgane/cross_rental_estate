@@ -13,17 +13,31 @@ class ThemeProvider with ChangeNotifier{
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     if (authProvider.user != null && !authProvider.isGuest) {
-      authProvider.user!.theme = _themeMode.toString();
+      authProvider.user!.theme = _themeMode == ThemeMode.light ? 'ThemeMode.light' : 'ThemeMode.dark';
       authProvider.updateUserInfo();
     }
   }
 
   void initTheme(String theme){
-    _themeMode = (theme == ThemeMode.light.toString() ? ThemeMode.light : ThemeMode.dark);
+    final newTheme = _parseThemeString(theme);
+    if (_themeMode != newTheme) {
+      _themeMode = newTheme;
+      notifyListeners();
+    }
   }
 
   void setTheme(String theme){
-    _themeMode = (theme == ThemeMode.light.toString() ? ThemeMode.light : ThemeMode.dark);
+    _themeMode = _parseThemeString(theme);
     notifyListeners();
+  }
+
+  ThemeMode _parseThemeString(String theme) {
+    switch (theme) {
+      case 'ThemeMode.dark':
+        return ThemeMode.dark;
+      case 'ThemeMode.light':
+      default:
+        return ThemeMode.light;
+    }
   }
 }

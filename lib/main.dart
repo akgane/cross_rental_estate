@@ -24,6 +24,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:rental_estate_app/widgets/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'models/user.dart';
+
 
 
 Future<void> main() async{
@@ -89,6 +91,29 @@ class AuthWrapper extends StatefulWidget {
 
 class _AuthWrapperState extends State<AuthWrapper> {
   @override
+  void initState() {
+    super.initState();
+    _checkAndReloadUser();
+  }
+
+  void _checkAndReloadUser() {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final session = Provider.of<SessionProvider>(context, listen: false);
+
+    if (session.isLoggedIn && auth.user == null) {
+      Future.microtask(() => auth.reloadUser(session.userId!));
+    }
+  }
+
+  void _initUserSettings(BuildContext context, AppUser user) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
+
+    themeProvider.initTheme(user.theme);
+    localeProvider.initLocale(Locale(user.language));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
     final session = Provider.of<SessionProvider>(context);
@@ -102,22 +127,13 @@ class _AuthWrapperState extends State<AuthWrapper> {
       );
     }
 
-    if (session.isLoggedIn && auth.user == null) {
-      // Schedule the reload for after this frame is complete
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          auth.reloadUser(session.userId!);
-        }
-      });
-      return Scaffold(
-        body: SplashScreen()
-      );
-    }
-
     if (auth.user != null) {
       debugPrint("AuthWrapper: User authenticated");
       if (!session.isLoggedIn) {
         session.login(auth.user!.uid);
+      }
+      if (!auth.isGuest) {
+        _initUserSettings(context, auth.user!);
       }
       return const MainPage();
     } else {
@@ -137,8 +153,6 @@ class MainPage extends StatelessWidget{
     final estateProvider = Provider.of<EstateProvider>(context, listen: false);
     final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
 
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context);
@@ -146,10 +160,6 @@ class MainPage extends StatelessWidget{
     debugPrint("MainPage building");
 
     if(guestMode) authProvider.loginAsGuest();
-    else{
-      themeProvider.initTheme(authProvider.user!.theme);
-      localeProvider.initLocale(Locale(authProvider.user!.language));
-    }
 
     return FutureBuilder<void>(
         future: Future.wait([
@@ -193,7 +203,7 @@ class MainPage extends StatelessWidget{
             
             bottomNavigationBar: MyBottomAppBar(isGuest: authProvider.isGuest),
             floatingActionButton: FloatingActionButton(
-                onPressed: () => debugPrint('opening map page'),
+                onPressed: () => Navigator.pushNamed(context, AppRoutes.addEstate),
                 backgroundColor: theme.primaryColor,
                 shape: CircleBorder(),
                 child: Icon(Icons.create_outlined)

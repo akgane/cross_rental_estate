@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:rental_estate_app/providers/auth_provider.dart';
+import 'package:rental_estate_app/providers/session_provider.dart';
 import 'package:rental_estate_app/routes/app_routes.dart';
 
 
@@ -13,6 +14,7 @@ class ProfilePage extends StatelessWidget{
     final theme = Theme.of(context);
 
     final authProvider = Provider.of<AuthProvider>(context);
+    final sessionProvider = Provider.of<SessionProvider>(context, listen: false);
     final user = authProvider.user;
 
     if (user == null) {
@@ -24,6 +26,18 @@ class ProfilePage extends StatelessWidget{
           child: CircularProgressIndicator(),
         ),
       );
+    }
+
+    Future<void> handleLogout() async {
+      await sessionProvider.logout();
+      await authProvider.signOut();
+      if (context.mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.auth,
+          (route) => false,
+        );
+      }
     }
 
     return Scaffold(
@@ -56,10 +70,7 @@ class ProfilePage extends StatelessWidget{
             ),
             IconButton(
               icon: Icon(Icons.logout, color: theme.iconTheme.color),
-              onPressed: () async{
-                Navigator.pushReplacementNamed(context, AppRoutes.auth);
-                await authProvider.signOut();
-              },
+              onPressed: handleLogout,
             )
           ]
         )
