@@ -8,7 +8,25 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'language_list_tile.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
+  @override
+  _SettingsPageState createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  // State variables for all interactive elements
+  String _selectedFontSize = 'Normal';
+  bool _animationsEnabled = true;
+  bool _offlineMode = false;
+  bool _autoDownload = true;
+  bool _pushNotifications = true;
+  bool _emailNotifications = false;
+  bool _chatNotifications = true;
+  bool _soundEnabled = true;
+  bool _vibrationEnabled = true;
+  bool _biometricEnabled = false;
+  bool _twoFactorEnabled = false;
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
@@ -57,7 +75,7 @@ class SettingsPage extends StatelessWidget {
           
           // Display Settings
           ListTile(
-            leading: Icon(Icons.dark_mode),
+            leading: Icon(Icons.dark_mode, color: theme.iconTheme.color),
             title: Text(loc.s_dark_mode, style: theme.textTheme.bodyMedium),
             trailing: Switch(
               value: themeProvider.currentTheme == ThemeMode.dark,
@@ -65,10 +83,10 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.font_download),
+            leading: Icon(Icons.font_download, color: theme.iconTheme.color),
             title: Text(loc.s_font_size, style: theme.textTheme.bodyMedium),
             trailing: DropdownButton<String>(
-              value: 'Normal',
+              value: _selectedFontSize,
               items: ['Small', 'Normal', 'Large'].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -76,17 +94,23 @@ class SettingsPage extends StatelessWidget {
                 );
               }).toList(),
               onChanged: (String? newValue) {
-                // TODO: Implement font size change
+                if (newValue != null) {
+                  setState(() {
+                    _selectedFontSize = newValue;
+                  });
+                }
               },
             ),
           ),
           ListTile(
-            leading: Icon(Icons.animation),
+            leading: Icon(Icons.animation, color: theme.iconTheme.color),
             title: Text(loc.s_animations, style: theme.textTheme.bodyMedium),
             trailing: Switch(
-              value: true,
+              value: _animationsEnabled,
               onChanged: (bool value) {
-                // TODO: Implement animations toggle
+                setState(() {
+                  _animationsEnabled = value;
+                });
               },
             ),
           ),
@@ -94,22 +118,26 @@ class SettingsPage extends StatelessWidget {
           _buildSectionHeader(loc.s_data_usage),
           
           ListTile(
-            leading: Icon(Icons.offline_bolt),
+            leading: Icon(Icons.offline_bolt, color: theme.iconTheme.color),
             title: Text(loc.s_offline_mode, style: theme.textTheme.bodyMedium),
             trailing: Switch(
-              value: false,
+              value: _offlineMode,
               onChanged: (bool value) {
-                // TODO: Implement offline mode
+                setState(() {
+                  _offlineMode = value;
+                });
               },
             ),
           ),
           ListTile(
-            leading: Icon(Icons.image),
+            leading: Icon(Icons.image, color: theme.iconTheme.color),
             title: Text(loc.s_auto_download, style: theme.textTheme.bodyMedium),
             trailing: Switch(
-              value: true,
+              value: _autoDownload,
               onChanged: (bool value) {
-                // TODO: Implement auto download
+                setState(() {
+                  _autoDownload = value;
+                });
               },
             ),
           ),
@@ -117,52 +145,62 @@ class SettingsPage extends StatelessWidget {
           _buildSectionHeader(loc.s_notifications_settings),
           
           ListTile(
-            leading: Icon(Icons.notifications),
+            leading: Icon(Icons.notifications, color: theme.iconTheme.color),
             title: Text(loc.s_push_notifications, style: theme.textTheme.bodyMedium),
             trailing: Switch(
-              value: true,
+              value: _pushNotifications,
               onChanged: (bool value) {
-                // TODO: Implement push notifications
+                setState(() {
+                  _pushNotifications = value;
+                });
               },
             ),
           ),
           ListTile(
-            leading: Icon(Icons.email),
+            leading: Icon(Icons.email, color: theme.iconTheme.color),
             title: Text(loc.s_email_notifications, style: theme.textTheme.bodyMedium),
             trailing: Switch(
-              value: false,
+              value: _emailNotifications,
               onChanged: (bool value) {
-                // TODO: Implement email notifications
+                setState(() {
+                  _emailNotifications = value;
+                });
               },
             ),
           ),
           ListTile(
-            leading: Icon(Icons.chat),
+            leading: Icon(Icons.chat, color: theme.iconTheme.color),
             title: Text(loc.s_chat_notifications, style: theme.textTheme.bodyMedium),
             trailing: Switch(
-              value: true,
+              value: _chatNotifications,
               onChanged: (bool value) {
-                // TODO: Implement chat notifications
+                setState(() {
+                  _chatNotifications = value;
+                });
               },
             ),
           ),
           ListTile(
-            leading: Icon(Icons.volume_up),
+            leading: Icon(Icons.volume_up, color: theme.iconTheme.color),
             title: Text(loc.s_sound, style: theme.textTheme.bodyMedium),
             trailing: Switch(
-              value: true,
+              value: _soundEnabled,
               onChanged: (bool value) {
-                // TODO: Implement sound toggle
+                setState(() {
+                  _soundEnabled = value;
+                });
               },
             ),
           ),
           ListTile(
-            leading: Icon(Icons.vibration),
+            leading: Icon(Icons.vibration, color: theme.iconTheme.color),
             title: Text(loc.s_vibration, style: theme.textTheme.bodyMedium),
             trailing: Switch(
-              value: true,
+              value: _vibrationEnabled,
               onChanged: (bool value) {
-                // TODO: Implement vibration toggle
+                setState(() {
+                  _vibrationEnabled = value;
+                });
               },
             ),
           ),
@@ -170,22 +208,26 @@ class SettingsPage extends StatelessWidget {
           _buildSectionHeader(loc.s_security),
           
           ListTile(
-            leading: Icon(Icons.fingerprint),
+            leading: Icon(Icons.fingerprint, color: theme.iconTheme.color),
             title: Text(loc.s_biometric, style: theme.textTheme.bodyMedium),
             trailing: Switch(
-              value: false,
+              value: _biometricEnabled,
               onChanged: (bool value) {
-                // TODO: Implement biometric auth
+                setState(() {
+                  _biometricEnabled = value;
+                });
               },
             ),
           ),
           ListTile(
-            leading: Icon(Icons.security),
+            leading: Icon(Icons.security, color: theme.iconTheme.color),
             title: Text(loc.s_two_factor, style: theme.textTheme.bodyMedium),
             trailing: Switch(
-              value: false,
+              value: _twoFactorEnabled,
               onChanged: (bool value) {
-                // TODO: Implement 2FA
+                setState(() {
+                  _twoFactorEnabled = value;
+                });
               },
             ),
           ),
@@ -193,7 +235,7 @@ class SettingsPage extends StatelessWidget {
           _buildSectionHeader(loc.s_language),
           
           ListTile(
-            leading: Icon(Icons.language),
+            leading: Icon(Icons.language, color: theme.iconTheme.color),
             title: Text(loc.s_language, style: theme.textTheme.bodyMedium),
             trailing: Icon(Icons.arrow_forward_ios, color: theme.iconTheme.color),
             onTap: () {
@@ -241,22 +283,22 @@ class SettingsPage extends StatelessWidget {
           _buildSectionHeader(loc.s_help_support),
           
           ListTile(
-            leading: Icon(Icons.help),
+            leading: Icon(Icons.help, color: theme.iconTheme.color),
             title: Text(loc.s_faq, style: theme.textTheme.bodyMedium),
             onTap: () => _showInfoDialog(loc.s_faq, 'Frequently asked questions and answers will be displayed here.'),
           ),
           ListTile(
-            leading: Icon(Icons.contact_support),
+            leading: Icon(Icons.contact_support, color: theme.iconTheme.color),
             title: Text(loc.s_contact, style: theme.textTheme.bodyMedium),
             onTap: () => _showInfoDialog(loc.s_contact, 'Contact our support team at support@example.com'),
           ),
           ListTile(
-            leading: Icon(Icons.bug_report),
+            leading: Icon(Icons.bug_report, color: theme.iconTheme.color),
             title: Text(loc.s_report_bug, style: theme.textTheme.bodyMedium),
             onTap: () => _showInfoDialog(loc.s_report_bug, 'Report any issues or bugs you encounter while using the app.'),
           ),
           ListTile(
-            leading: Icon(Icons.star),
+            leading: Icon(Icons.star, color: theme.iconTheme.color),
             title: Text(loc.s_rate_app, style: theme.textTheme.bodyMedium),
             onTap: () => _showInfoDialog(loc.s_rate_app, 'Rate our app on the app store!'),
           ),
@@ -264,7 +306,7 @@ class SettingsPage extends StatelessWidget {
           _buildSectionHeader('Legal'),
           
           ListTile(
-            leading: Icon(Icons.privacy_tip),
+            leading: Icon(Icons.privacy_tip, color: theme.iconTheme.color),
             title: Text(loc.s_privacy, style: theme.textTheme.bodyMedium),
             onTap: () => _showInfoDialog(
               loc.s_privacy,
@@ -272,7 +314,7 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.info),
+            leading: Icon(Icons.info, color: theme.iconTheme.color),
             title: Text(loc.s_about, style: theme.textTheme.bodyMedium),
             onTap: () => _showInfoDialog(
               loc.s_about,

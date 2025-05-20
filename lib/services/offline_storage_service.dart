@@ -2,8 +2,11 @@ import 'dart:convert';
 import 'package:rental_estate_app/models/estate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/user.dart';
+
 class OfflineStorageService {
   static const String ESTATES_KEY = 'offline_estates';
+  static const String USER_KEY = 'user';
   final SharedPreferences _prefs;
 
   OfflineStorageService(this._prefs);
@@ -43,5 +46,27 @@ class OfflineStorageService {
 
   Future<void> clearOfflineData() async {
     await _prefs.remove(ESTATES_KEY);
+  }
+
+  Future<void> saveUser(AppUser user) async{
+    final Map<String, dynamic> userData = {
+      'uid': user.uid,
+      'email': user.email,
+      'username': user.username,
+      'avatar-url': user.avatarUrl,
+      'language': user.language,
+      'theme': user.theme,
+      'favorite-estates': user.favoriteEstates.toString()
+    };
+
+    await _prefs.setString(USER_KEY, jsonEncode(userData));
+  }
+
+  Future<AppUser?> getOfflineUser() async{
+    final String? userString = _prefs.getString(USER_KEY);
+    if(userString == null) return null;
+
+    List<dynamic> userData = jsonDecode(userString);
+
   }
 } 

@@ -26,8 +26,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/user.dart';
 
-
-
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
