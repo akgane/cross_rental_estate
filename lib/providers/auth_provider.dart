@@ -101,4 +101,40 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> updateUsername(String newUsername) async {
+    if (_user == null || _isGuest) return;
+    
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    
+    try {
+      await _authService.updateUsername(_user!.uid, newUsername);
+      _user!.username = newUsername;
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateEmail(String newEmail) async {
+    if (_user == null || _isGuest) return;
+    
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    
+    try {
+      await _authService.updateEmail(_user!.uid, newEmail);
+      _user!.email = newEmail;
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

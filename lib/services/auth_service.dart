@@ -114,6 +114,45 @@ class AuthService {
     }
   }
 
+  Future<void> updateUsername(String uid, String newUsername) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .update({'username': newUsername});
+    } on FirebaseException catch (e) {
+      debugPrint('Firebase update username exception: $e');
+      throw e;
+    } catch (e) {
+      debugPrint('Unknown update username exception: $e');
+      throw e;
+    }
+  }
+
+  Future<void> updateEmail(String uid, String newEmail) async {
+    try {
+      // Обновляем email в Firebase Auth
+      User? currentUser = _auth.currentUser;
+      if (currentUser != null) {
+        await currentUser.updateEmail(newEmail);
+        
+        // Обновляем email в Firestore
+        await _firestore
+            .collection('users')
+            .doc(uid)
+            .update({'email': newEmail});
+      } else {
+        throw Exception('No authenticated user found');
+      }
+    } on FirebaseException catch (e) {
+      debugPrint('Firebase update email exception: $e');
+      throw e;
+    } catch (e) {
+      debugPrint('Unknown update email exception: $e');
+      throw e;
+    }
+  }
+
   AppUser guestCreator(String? uid){
     return AppUser(
       uid: uid ?? 'uid',

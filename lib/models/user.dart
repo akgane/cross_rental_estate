@@ -1,7 +1,7 @@
 class AppUser {
   final String uid;
-  final String email;
-  final String username;
+  String email;
+  String username;
   final String avatarUrl;
   late String language;
   late String theme;

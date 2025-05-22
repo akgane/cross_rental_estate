@@ -22,6 +22,87 @@ class ProfilePage extends StatelessWidget{
     }
   }
 
+  void _showEditUsernameDialog(BuildContext context, AuthProvider authProvider, String currentUsername) {
+    final TextEditingController controller = TextEditingController(text: currentUsername);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Изменить имя пользователя'),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: 'Имя пользователя',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Отмена'),
+          ),
+          TextButton(
+            onPressed: () async {
+              if (controller.text.trim().isNotEmpty) {
+                await authProvider.updateUsername(controller.text.trim());
+                Navigator.pop(context);
+              }
+            },
+            child: Text('Сохранить'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditEmailDialog(BuildContext context, AuthProvider authProvider, String currentEmail) {
+    final TextEditingController controller = TextEditingController(text: currentEmail);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Изменить электронную почту'),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: 'Email',
+            border: OutlineInputBorder(),
+          ),
+          keyboardType: TextInputType.emailAddress,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Отмена'),
+          ),
+          TextButton(
+            onPressed: () async {
+              final email = controller.text.trim();
+              if (email.isNotEmpty && email.contains('@')) {
+                try {
+                  await authProvider.updateEmail(email);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Email успешно обновлен'))
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Ошибка: ${e.toString()}'))
+                  );
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Пожалуйста, введите корректный email'))
+                );
+              }
+            },
+            child: Text('Сохранить'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
@@ -63,9 +144,18 @@ class ProfilePage extends StatelessWidget{
                       )
                   ),
                   SizedBox(height: 24,),
-                  Text(
-                      user.username,
-                      style: theme.textTheme.titleLarge?.copyWith(color: Colors.white)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                          user.username,
+                          style: theme.textTheme.titleLarge
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.edit, color: theme.iconTheme.color),
+                        onPressed: () => _showEditUsernameDialog(context, authProvider, user.username),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 12,),
                   Padding(
@@ -77,6 +167,10 @@ class ProfilePage extends StatelessWidget{
                           leading: Icon(Icons.email, color: theme.iconTheme.color),
                           title: Text('Email', style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
                           subtitle: Text(user.email, style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
+                          trailing: IconButton(
+                            icon: Icon(Icons.edit, color: theme.iconTheme.color),
+                            onPressed: () => _showEditEmailDialog(context, authProvider, user.email),
+                          ),
                         ),
                         Divider(color: Colors.white24),
                         ListTile(
@@ -94,6 +188,16 @@ class ProfilePage extends StatelessWidget{
                     ),
                   ),
                   SizedBox(height: 24),
+                  if (authProvider.isLoading)
+                    CircularProgressIndicator(),
+                  if (authProvider.error != null)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        authProvider.error!,
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
                   IconButton(
                     icon: Icon(Icons.logout, color: theme.iconTheme.color),
                     onPressed: () async{
