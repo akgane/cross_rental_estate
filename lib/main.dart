@@ -98,7 +98,11 @@ class _AuthWrapperState extends State<AuthWrapper> {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final session = Provider.of<SessionProvider>(context, listen: false);
 
-    if (session.isLoggedIn && auth.user == null) {
+    // if (session.isLoggedIn && auth.user == null) {
+    //   Future.microtask(() => auth.reloadUser(session.userId!));
+    // }
+
+    if(session.isLoggedIn && auth.isGuest){
       Future.microtask(() => auth.reloadUser(session.userId!));
     }
   }
@@ -115,6 +119,19 @@ class _AuthWrapperState extends State<AuthWrapper> {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
     final session = Provider.of<SessionProvider>(context);
+
+    // debugPrint("AuthWrapper building start");
+    //
+    // if(auth.isLoading || !session.isInitialized){
+    //   debugPrint("AuthWrapper: Loading state");
+    //   return Scaffold(
+    //     body: SplashScreen()
+    //   );
+    // }
+    //
+    // if(auth.user == null){
+    //
+    // }
 
     debugPrint("AuthWrapper building");
 
