@@ -7,10 +7,12 @@ import 'package:rental_estate_app/pages/main/widgets/bottom_app_bar.dart';
 import 'package:rental_estate_app/pages/main/widgets/categories_section.dart';
 import 'package:rental_estate_app/pages/main/widgets/section.dart';
 import 'package:rental_estate_app/pages/main/widgets/top_bar.dart';
+import 'package:rental_estate_app/pages/pin_code_screen.dart';
 import 'package:rental_estate_app/providers/auth_provider.dart';
 import 'package:rental_estate_app/providers/category_provider.dart';
 import 'package:rental_estate_app/providers/estate_provider.dart';
 import 'package:rental_estate_app/providers/locale_provider.dart';
+import 'package:rental_estate_app/providers/pin_provider.dart';
 import 'package:rental_estate_app/providers/theme_provider.dart';
 import 'package:rental_estate_app/providers/session_provider.dart';
 import 'package:rental_estate_app/routes/app_routes.dart';
@@ -43,7 +45,8 @@ Future<void> main() async{
     ChangeNotifierProvider(create: (_) => ThemeProvider()),
     ChangeNotifierProvider(create: (_) => LocaleProvider()),
     ChangeNotifierProvider(create: (_) => EstateProvider(connectivityService, offlineStorage)),
-    ChangeNotifierProvider(create: (_) => CategoryProvider())
+    ChangeNotifierProvider(create: (_) => CategoryProvider()),
+    ChangeNotifierProvider(create: (_) => PinProvider(sharedPreferences)),
   ],
   child: MyApp()
   ));
@@ -54,6 +57,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final localeProvider = Provider.of<LocaleProvider>(context);
+    final pinProvider = Provider.of<PinProvider>(context);
 
     return MaterialApp(
       title: 'Rental Estate App',
@@ -61,7 +65,7 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme,
       themeMode: themeProvider.currentTheme,
       locale: localeProvider.currentLocale,
-      home: const AuthWrapper(),
+      home: pinProvider.isPinEntered ? const AuthWrapper() : const PinCodeScreen(),
       initialRoute: AppRoutes.home,
       onGenerateRoute: RouteGenerator.generateRoute,
       localizationsDelegates: const
