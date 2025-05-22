@@ -68,37 +68,34 @@ class ProfilePage extends StatelessWidget{
                       style: theme.textTheme.titleLarge?.copyWith(color: Colors.white)
                   ),
                   SizedBox(height: 12,),
-                  Card(
-                    color: theme.cardColor,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ListTile(
-                            leading: Icon(Icons.email, color: Colors.white),
-                            title: Text('Email', style: TextStyle(color: Colors.white)),
-                            subtitle: Text(user.email, style: TextStyle(color: Colors.white70)),
-                          ),
-                          Divider(color: Colors.white24),
-                          ListTile(
-                            leading: Icon(Icons.language, color: Colors.white),
-                            title: Text('Language', style: TextStyle(color: Colors.white)),
-                            subtitle: Text(_getLocalizedLanguageName(localeProvider.currentLocale.languageCode), style: TextStyle(color: Colors.white70)),
-                          ),
-                          Divider(color: Colors.white24),
-                          ListTile(
-                            leading: Icon(Icons.palette, color: Colors.white),
-                            title: Text('Theme', style: TextStyle(color: Colors.white)),
-                            subtitle: Text(themeProvider.currentTheme == ThemeMode.dark ? 'Dark' : 'Light', style: TextStyle(color: Colors.white70)),
-                          ),
-                        ],
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListTile(
+                          leading: Icon(Icons.email, color: theme.iconTheme.color),
+                          title: Text('Email', style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
+                          subtitle: Text(user.email, style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
+                        ),
+                        Divider(color: Colors.white24),
+                        ListTile(
+                          leading: Icon(Icons.language, color: theme.iconTheme.color),
+                          title: Text('Language', style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
+                          subtitle: Text(_getLocalizedLanguageName(localeProvider.currentLocale.languageCode), style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
+                        ),
+                        Divider(color: Colors.white24),
+                        ListTile(
+                          leading: Icon(Icons.palette, color: theme.iconTheme.color),
+                          title: Text('Theme', style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
+                          subtitle: Text(themeProvider.currentTheme == ThemeMode.dark ? 'Dark' : 'Light', style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 24),
                   IconButton(
-                    icon: Icon(Icons.logout, color: Colors.white),
+                    icon: Icon(Icons.logout, color: theme.iconTheme.color),
                     onPressed: () async{
                       Navigator.pushReplacementNamed(context, AppRoutes.auth);
                       await authProvider.signOut();
