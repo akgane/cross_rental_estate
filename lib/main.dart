@@ -15,6 +15,7 @@ import 'package:rental_estate_app/providers/locale_provider.dart';
 import 'package:rental_estate_app/providers/pin_provider.dart';
 import 'package:rental_estate_app/providers/theme_provider.dart';
 import 'package:rental_estate_app/providers/session_provider.dart';
+import 'package:rental_estate_app/providers/font_size_provider.dart';
 import 'package:rental_estate_app/routes/app_routes.dart';
 import 'package:rental_estate_app/routes/route_generator.dart';
 import 'package:rental_estate_app/services/connectivity_service.dart';
@@ -47,6 +48,7 @@ Future<void> main() async{
     ChangeNotifierProvider(create: (_) => EstateProvider(connectivityService, offlineStorage)),
     ChangeNotifierProvider(create: (_) => CategoryProvider()),
     ChangeNotifierProvider(create: (_) => PinProvider(sharedPreferences)),
+    ChangeNotifierProvider(create: (_) => FontSizeProvider()),
   ],
   child: MyApp()
   ));
@@ -58,11 +60,16 @@ class MyApp extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final localeProvider = Provider.of<LocaleProvider>(context);
     final pinProvider = Provider.of<PinProvider>(context);
+    final fontSizeProvider = Provider.of<FontSizeProvider>(context);
 
     return MaterialApp(
       title: 'Rental Estate App',
-      theme: lightTheme,
-      darkTheme: darkTheme,
+      theme: lightTheme.copyWith(
+        textTheme: scaledTextTheme(lightTheme.textTheme, fontSizeProvider.fontSize),
+      ),
+      darkTheme: darkTheme.copyWith(
+        textTheme: scaledTextTheme(darkTheme.textTheme, fontSizeProvider.fontSize),
+      ),
       themeMode: themeProvider.currentTheme,
       locale: localeProvider.currentLocale,
       home: pinProvider.isPinEntered ? const AuthWrapper() : const PinCodeScreen(),
@@ -80,6 +87,33 @@ class MyApp extends StatelessWidget {
         Locale('ru'),
         Locale('kk')
       ],
+    );
+  }
+
+  TextStyle safeApply(TextStyle? style, double factor) {
+    if (style == null) return TextStyle(); // Return a default style if the original is null
+    return style.copyWith(
+      fontSize: (style.fontSize ?? 14.0) * factor, // Provide a default fontSize if it's null
+    );
+  }
+
+  TextTheme scaledTextTheme(TextTheme baseTheme, double factor) {
+    return TextTheme(
+      displayLarge: safeApply(baseTheme.displayLarge, factor),
+      displayMedium: safeApply(baseTheme.displayMedium, factor),
+      displaySmall: safeApply(baseTheme.displaySmall, factor),
+      headlineLarge: safeApply(baseTheme.headlineLarge, factor),
+      headlineMedium: safeApply(baseTheme.headlineMedium, factor),
+      headlineSmall: safeApply(baseTheme.headlineSmall, factor),
+      titleLarge: safeApply(baseTheme.titleLarge, factor),
+      titleMedium: safeApply(baseTheme.titleMedium, factor),
+      titleSmall: safeApply(baseTheme.titleSmall, factor),
+      bodyLarge: safeApply(baseTheme.bodyLarge, factor),
+      bodyMedium: safeApply(baseTheme.bodyMedium, factor),
+      bodySmall: safeApply(baseTheme.bodySmall, factor),
+      labelLarge: safeApply(baseTheme.labelLarge, factor),
+      labelMedium: safeApply(baseTheme.labelMedium, factor),
+      labelSmall: safeApply(baseTheme.labelSmall, factor),
     );
   }
 }
@@ -149,23 +183,34 @@ class _AuthWrapperState extends State<AuthWrapper> {
   }
 }
 
-class MainPage extends StatelessWidget{
+class MainPage extends StatefulWidget{
   final bool guestMode;
 
   const MainPage({Key? key, this.guestMode = false}) : super(key: key);
 
   @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage>{
+  @override
+  void initState() {
+    super.initState();
+    if (widget.guestMode) {
+      Provider.of<AuthProvider>(context, listen: false).loginAsGuest();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final estateProvider = Provider.of<EstateProvider>(context, listen: false);
     final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context);
 
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context);
 
     debugPrint("MainPage building");
-
-    if(guestMode) authProvider.loginAsGuest();
 
     return FutureBuilder<void>(
         future: Future.wait([

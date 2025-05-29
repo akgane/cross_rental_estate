@@ -35,9 +35,13 @@ class CategoryButton extends StatelessWidget {
 
           SizedBox(height: 4),
 
-          Text(
-              title,
-              style: theme.textTheme.bodyMedium
+          Flexible(
+            child: Text(
+                title,
+                style: theme.textTheme.bodyMedium,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+            ),
           )
         ],
       ),
