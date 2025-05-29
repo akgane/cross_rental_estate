@@ -80,6 +80,10 @@ class _EstateDetailsState extends State<EstateDetailsPage>{
               style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(width: 4,),
+            Text(
+              widget.estate.uid.substring(0, 5),
+              style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500)
+            )
           ],
         ),
         actions: [

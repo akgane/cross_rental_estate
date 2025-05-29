@@ -63,4 +63,6 @@ class EstateProvider with ChangeNotifier {
       return [];
     }
   }
+
+  void addEstate(Estate estate) => _estates.add(estate);
 }

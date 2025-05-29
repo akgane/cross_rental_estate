@@ -124,19 +124,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
     final auth = Provider.of<AuthProvider>(context);
     final session = Provider.of<SessionProvider>(context);
 
-    // debugPrint("AuthWrapper building start");
-    //
-    // if(auth.isLoading || !session.isInitialized){
-    //   debugPrint("AuthWrapper: Loading state");
-    //   return Scaffold(
-    //     body: SplashScreen()
-    //   );
-    // }
-    //
-    // if(auth.user == null){
-    //
-    // }
-
     debugPrint("AuthWrapper building");
 
     if (auth.isLoading || !session.isInitialized) {
@@ -222,7 +209,7 @@ class MainPage extends StatelessWidget{
             
             bottomNavigationBar: MyBottomAppBar(isGuest: authProvider.isGuest),
             floatingActionButton: FloatingActionButton(
-                onPressed: () => Navigator.pushNamed(context, AppRoutes.addEstate),
+                onPressed: () => Navigator.pushNamed(context, AppRoutes.addEstate, arguments: {'estate-provider': estateProvider}),
                 backgroundColor: theme.primaryColor,
                 shape: CircleBorder(),
                 child: Icon(Icons.create_outlined)

@@ -54,7 +54,7 @@ class RouteGenerator {
         );
       case AppRoutes.addEstate:
         return MaterialPageRoute(
-          builder: (_) => AddEstatePage()
+          builder: (_) => AddEstatePage(estateProvider: args?['estate-provider'],)
         );
       case AppRoutes.home:
       default:

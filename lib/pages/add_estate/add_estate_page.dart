@@ -1,12 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rental_estate_app/models/estate.dart';
 import 'package:rental_estate_app/providers/category_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:rental_estate_app/providers/estate_provider.dart';
+
+import '../../models/estate.dart';
+
+
 class AddEstatePage extends StatefulWidget {
+  EstateProvider estateProvider;
+
+  AddEstatePage({required this.estateProvider});
+
   @override
   _AddEstatePageState createState() => _AddEstatePageState();
 }
@@ -108,7 +117,21 @@ class _AddEstatePageState extends State<AddEstatePage> {
     return null;
   }
 
-  void _submitForm() {
+  String chooseImage(String? category){
+    switch(category){
+      case 'Home':
+        return 'house1.jpg';
+      case 'Office':
+        return 'office1.jpg';
+      case 'Apartment':
+        return 'apartment1.jpg';
+      case 'Villa':
+      default:
+        return 'villa1.jpg';
+    }
+  }
+
+  void _submitForm() async{
     if (_selectedImages.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please add at least one image')), //TODO loc
@@ -117,25 +140,51 @@ class _AddEstatePageState extends State<AddEstatePage> {
     }
 
     if (_formKey.currentState!.validate() && _selectedCategory != null) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Success'),
-            content: Text('Estate listing created successfully'), //TODO loc
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
+      final estateData = {
+        'title': _titleController.text.trim(),
+        'category': _selectedCategory,
+        'address': _addressController.text.trim(),
+        'price': double.parse(_priceController.text.trim()),
+        'features': {
+          'bedrooms': _features['bedrooms'],
+          'bathrooms': _features['bathrooms'],
         },
-      );
+        'imageUrl': "https://cross-rentalestate.s3.us-east-1.amazonaws.com/${chooseImage(_selectedCategory)}",
+        'postedDate': '2025-12-12T00:00:00.000',
+        'views': 0
+      };
+
+      try{
+        DocumentReference ref = await FirebaseFirestore.instance.collection('estates').add(estateData);
+
+        debugPrint('New estate created with ID: ${ref.id}');
+
+        widget.estateProvider.addEstate(Estate.fromFirestore(await ref.get()));
+
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Success'),
+              content: Text('Estate listing created successfully'), //TODO loc
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }catch(e){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save: $e')), //TODO loc
+        );
+      }
     } else if (_selectedCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please select a category')), //TODO loc
